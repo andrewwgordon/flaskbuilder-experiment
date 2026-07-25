@@ -1,7 +1,18 @@
 import enum
+
 from flask_appbuilder import Model
 from flask_appbuilder.models.mixins import AuditMixin
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Float, DateTime, Enum, Table
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 

@@ -1,12 +1,13 @@
 from flask_appbuilder.api import ModelRestApi
 from flask_appbuilder.models.sqla.interface import SQLAInterface
+
 from .models import (
+    DomainTarget,
     Project,
+    ProjectBaseline,
     Requirement,
     RequirementVersion,
     RequirementView,
-    ProjectBaseline,
-    DomainTarget,
 )
 
 
