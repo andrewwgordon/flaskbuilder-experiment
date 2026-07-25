@@ -1,0 +1,164 @@
+{% extends "appbuilder/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row style="margin-top: 15px;">
+        <div class="col-md-12">
+            <h1 class="page-header">
+                <i class="fa fa-dashboard"></i> REQMan Executive Dashboard
+                <small>System Engineering & Requirements Overview</small>
+            </h1>
+        </div>
+    </div>
+
+    <!-- KPI Summary Row -->
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-cubes fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" style="font-size: 36px; font-weight: bold;">{{ total_projects }}</div>
+                            <div>Active Projects</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('ProjectMasterView.list') }}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View All Projects</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tasks fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" style="font-size: 36px; font-weight: bold;">{{ total_requirements }}</div>
+                            <div>Total Requirements</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('RequirementCRUDView.list') }}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View All Requirements</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-check-square-o fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" style="font-size: 36px; font-weight: bold;">{{ pending_reviews_count }}</div>
+                            <div>Pending Reviews</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('ReviewerDashboardView.pending_reviews') }}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Go to Review Inbox</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bookmark fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" style="font-size: 36px; font-weight: bold;">{{ total_baselines }}</div>
+                            <div>Project Baselines</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('ProjectBaselineMasterView.list') }}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Baselines</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Portfolio Cards -->
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-folder-open"></i> Projects Portfolio & Quick Access</h3>
+                </div>
+                <div class="panel-body">
+                    {% if projects %}
+                        <div class="row">
+                            {% for item in project_summaries %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="thumbnail" style="padding: 15px; border-left: 4px solid #337ab7; margin-bottom: 20px;">
+                                    <div class="caption">
+                                        <h4>
+                                            <span class="label label-primary">{{ item.project.project_code }}</span>
+                                            <strong>{{ item.project.name }}</strong>
+                                        </h4>
+                                        <p class="text-muted" style="min-height: 40px; margin-top: 10px;">
+                                            {{ item.project.description or 'No description provided.' }}
+                                        </p>
+                                        <hr style="margin: 10px 0;" />
+                                        <div class="row text-center" style="margin-bottom: 15px;">
+                                            <div class="col-xs-6">
+                                                <strong>{{ item.req_count }}</strong>
+                                                <div class="text-muted"><small>Requirements</small></div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <strong>{{ item.baseline_count }}</strong>
+                                                <div class="text-muted"><small>Baselines</small></div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group btn-group-justified" role="group">
+                                            <a href="{{ url_for('ProjectMasterView.list') }}" class="btn btn-default btn-sm" title="View Projects Master List">
+                                                <i class="fa fa-eye"></i> Projects
+                                            </a>
+                                            <a href="{{ url_for('RequirementCRUDView.list') }}?_flt_0_project={{ item.project.id }}" class="btn btn-primary btn-sm" title="View Project Requirements">
+                                                <i class="fa fa-tasks"></i> Requirements
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i> No projects found. <a href="{{ url_for('ProjectMasterView.add') }}" class="alert-link">Create a new project</a> to get started.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
