@@ -1,23 +1,28 @@
-from flask import flash, redirect, render_template, current_app
-from flask_appbuilder import ModelView, MasterDetailView, BaseView, IndexView, expose, action, has_access
+from flask import flash, redirect, render_template
+from flask_appbuilder import (
+    BaseView,
+    IndexView,
+    MasterDetailView,
+    ModelView,
+    action,
+    expose,
+    has_access,
+)
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from markupsafe import Markup
+
 from .models import (
-    Project,
-    Requirement,
-    RequirementVersion,
-    RequirementView,
-    PropertyValue,
-    StringValue,
-    ValueWithUnit,
     DomainTarget,
     PersonOrganizationSelect,
-    RequirementSatisfactionAssertion,
-    RequirementReview,
+    Project,
     ProjectBaseline,
-    RequirementRelationship,
-    RequirementTracingRelationship,
-    RequirementDecompositionRelationship,
+    Requirement,
+    RequirementReview,
+    RequirementSatisfactionAssertion,
+    RequirementVersion,
+    RequirementView,
+    StringValue,
+    ValueWithUnit,
     VersionStatus,
 )
 
@@ -144,7 +149,7 @@ class RequirementVersionView(ModelView):
 
     def pre_update(self, item):
         if item.status in [VersionStatus.APPROVED, VersionStatus.BASELINED]:
-            raise Exception("Approved or Baselined requirement versions are read-only. Create a new revision.")
+            raise ValueError("Approved or Baselined requirement versions are read-only. Create a new revision.")
 
     @action("submit_for_review", "Submit for Review", "Submit selected draft(s) for formal review?", "fa-paper-plane", single=True)
     def submit_for_review(self, items):

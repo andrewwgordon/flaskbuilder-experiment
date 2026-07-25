@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
+
 from flask import g
 from flask_appbuilder import Model
-from app import create_app, db, appbuilder
-import app.models as models
+
+from app import appbuilder, create_app, db, models
 
 app = create_app()
 
@@ -66,7 +67,7 @@ with app.app_context():
         requirement_id=req1.id,
         version_label="1.0.0",
         status=models.VersionStatus.IN_REVIEW,
-        revision_date=datetime.now(),
+        revision_date=datetime.now(timezone.utc),
     )
     db.session.add(v1)
     db.session.commit()
@@ -106,7 +107,7 @@ with app.app_context():
         target_id=fcc_part.id,
         assertion_statement="Satisfied by hardware interrupt benchmark test suite v2.1.",
         asserted_by_id=alice.id,
-        asserted_at=datetime.now(),
+        asserted_at=datetime.now(timezone.utc),
     )
     db.session.add(assertion)
 
@@ -123,7 +124,7 @@ with app.app_context():
     baseline = models.ProjectBaseline(
         project_id=project.id,
         baseline_name="Baseline 1.0 - System Requirements Review (SRR)",
-        release_date=datetime.now(),
+        release_date=datetime.now(timezone.utc),
         versions=[v1],
     )
     db.session.add(baseline)

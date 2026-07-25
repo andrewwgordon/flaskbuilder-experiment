@@ -1,7 +1,7 @@
-from flask import Flask, app
+from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
-from .extensions import db
-from .extensions import appbuilder
+
+from .extensions import appbuilder, db
 
 
 def create_app() -> Flask:
@@ -20,29 +20,28 @@ def create_app() -> Flask:
         db.init_app(app)
 
         # Import Views & APIs after DB init to avoid circular imports
-        from .views import (
-            DashboardIndexView,
-            ProjectMasterView,
-            RequirementCRUDView,
-            RequirementVersionView,
-            RequirementViewView,
-            StringValueView,
-            ValueWithUnitView,
-            RequirementSatisfactionAssertionView,
-            RequirementReviewView,
-            ProjectBaselineMasterView,
-            ReviewerDashboardView,
-            DomainTargetView,
-            PersonOrganizationSelectView,
-            page_not_found,
-        )
         from .api import (
+            DomainTargetApi,
             ProjectApi,
+            ProjectBaselineApi,
             RequirementApi,
             RequirementVersionApi,
             RequirementViewApi,
-            ProjectBaselineApi,
-            DomainTargetApi,
+        )
+        from .views import (
+            DomainTargetView,
+            PersonOrganizationSelectView,
+            ProjectBaselineMasterView,
+            ProjectMasterView,
+            RequirementCRUDView,
+            RequirementReviewView,
+            RequirementSatisfactionAssertionView,
+            RequirementVersionView,
+            RequirementViewView,
+            ReviewerDashboardView,
+            StringValueView,
+            ValueWithUnitView,
+            page_not_found,
         )
 
         # Initialize AppBuilder with Flask app and DB session
