@@ -1,6 +1,10 @@
 import os
 import sys
 
+# Ensure the app package is on sys.path
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..")))
+
 import pytest
 from flask_appbuilder import Model
 from sqlalchemy.pool import StaticPool
@@ -26,12 +30,6 @@ from app.models import (
 
 # Ensure CODESPACES is false during testing so SERVER_NAME isn't set to external domain
 os.environ["CODESPACES"] = "false"
-
-
-# Ensure the app package is on sys.path
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..")))
-
 
 @pytest.fixture(scope="session")
 def app():
