@@ -1,4 +1,12 @@
+import os
+import sys
+
+import pytest
 from flask_appbuilder import Model
+from sqlalchemy.pool import StaticPool
+
+from app import create_app
+from app.extensions import appbuilder, db
 from app.models import (
     DomainTarget,
     PartyType,
@@ -15,12 +23,6 @@ from app.models import (
     ValueWithUnit,
     VersionStatus,
 )
-from app.extensions import appbuilder, db
-from app import create_app
-from sqlalchemy.pool import StaticPool
-import pytest
-import os
-import sys
 
 # Ensure CODESPACES is false during testing so SERVER_NAME isn't set to external domain
 os.environ["CODESPACES"] = "false"
