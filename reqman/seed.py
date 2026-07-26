@@ -1,30 +1,27 @@
+import sys
 from datetime import datetime, timezone
+from os import environ
 
 from flask import g
-from flask_appbuilder import Model
 
 from app import appbuilder, create_app, db, models
 
 app = create_app()
 
 with app.app_context():
-    print("Clearing and creating database tables...")
-    Model.metadata.drop_all(db.engine)
-    Model.metadata.create_all(db.engine)
 
-    print("Ensuring admin user exists...")
-    role_admin = appbuilder.sm.find_role(appbuilder.sm.auth_role_admin)
-    admin = appbuilder.sm.find_user(username="admin")
-    if not admin:
-        admin = appbuilder.sm.add_user(
-            username="admin",
-            first_name="System",
-            last_name="Admin",
-            email="admin@fab.org",
-            role=role_admin,
-            password="admin",
-        )
-    g.user = admin
+    print("Establishing user context...")
+    try:
+        user_name = environ["SEED_USER"]
+    except KeyError as ex:
+        print(f"Set SEED_USER environemnt variable to application user name: {ex.message}")
+        sys.exit(1)
+    user = appbuilder.sm.find_user(environ["SEED_USER"])
+    if not user:
+        print*"set SEED_USER environment variable."
+        sys.exit()
+
+    g.user = user
 
     print("Seeding sample data...")
 
