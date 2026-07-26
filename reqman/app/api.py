@@ -24,7 +24,8 @@ class ProjectApi(ModelRestApi):
 class RequirementApi(ModelRestApi):
     datamodel = SQLAInterface(Requirement)
     resource_name = "requirement"
-    list_columns = ["id", "req_key", "title", "project.project_code", "owner.name"]
+    list_columns = ["id", "req_key", "title",
+                    "project.project_code", "owner.name"]
     show_columns = ["id", "req_key", "title", "project", "owner"]
     add_columns = ["req_key", "title", "project", "owner"]
     edit_columns = ["req_key", "title", "project", "owner"]
@@ -34,8 +35,10 @@ class RequirementApi(ModelRestApi):
 class RequirementVersionApi(ModelRestApi):
     datamodel = SQLAInterface(RequirementVersion)
     resource_name = "requirement_version"
-    list_columns = ["id", "requirement.req_key", "version_label", "status", "revision_date"]
-    show_columns = ["id", "requirement", "version_label", "status", "revision_date"]
+    list_columns = ["id", "requirement.req_key",
+                    "version_label", "status", "revision_date"]
+    show_columns = ["id", "requirement",
+                    "version_label", "status", "revision_date"]
     add_columns = ["requirement", "version_label", "status", "revision_date"]
     edit_columns = ["version_label", "status", "revision_date"]
     search_columns = ["status"]
@@ -53,7 +56,8 @@ class RequirementViewApi(ModelRestApi):
 class ProjectBaselineApi(ModelRestApi):
     datamodel = SQLAInterface(ProjectBaseline)
     resource_name = "project_baseline"
-    list_columns = ["id", "project.project_code", "baseline_name", "release_date"]
+    list_columns = ["id", "project.project_code",
+                    "baseline_name", "release_date"]
     show_columns = ["id", "project", "baseline_name", "release_date"]
     add_columns = ["project", "baseline_name", "release_date"]
     edit_columns = ["baseline_name", "release_date"]
@@ -66,4 +70,3 @@ class DomainTargetApi(ModelRestApi):
     show_columns = ["id", "identifier", "name", "target_type"]
     add_columns = ["identifier", "name", "target_type"]
     edit_columns = ["identifier", "name", "target_type"]
-

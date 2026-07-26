@@ -58,13 +58,16 @@ class DashboardIndexView(IndexView):
         projects = session.query(Project).all()
         total_projects = len(projects)
         total_requirements = session.query(Requirement).count()
-        pending_reviews_count = session.query(RequirementVersion).filter_by(status=VersionStatus.IN_REVIEW).count()
+        pending_reviews_count = session.query(RequirementVersion).filter_by(
+            status=VersionStatus.IN_REVIEW).count()
         total_baselines = session.query(ProjectBaseline).count()
 
         project_summaries = []
         for proj in projects:
-            req_count = session.query(Requirement).filter_by(project_id=proj.id).count()
-            baseline_count = session.query(ProjectBaseline).filter_by(project_id=proj.id).count()
+            req_count = session.query(Requirement).filter_by(
+                project_id=proj.id).count()
+            baseline_count = session.query(
+                ProjectBaseline).filter_by(project_id=proj.id).count()
             project_summaries.append({
                 "project": proj,
                 "req_count": req_count,
@@ -116,40 +119,48 @@ class ProjectMasterView(MasterDetailView):
     add_columns = ["project_code", "name", "description"]
     edit_columns = ["project_code", "name", "description"]
     add_fieldsets = [
-        ("Project Details", {"fields": ["project_code", "name", "description"]})
+        ("Project Details", {"fields": [
+         "project_code", "name", "description"]})
     ]
     edit_fieldsets = [
-        ("Project Details", {"fields": ["project_code", "name", "description"]})
+        ("Project Details", {"fields": [
+         "project_code", "name", "description"]})
     ]
 
 
 class RequirementViewView(ModelView):
     datamodel = SQLAInterface(RequirementView)
     list_columns = ["version", "view_name"]
-    show_columns = ["version", "view_name", "properties", "satisfaction_assertions"]
+    show_columns = ["version", "view_name",
+                    "properties", "satisfaction_assertions"]
     add_columns = ["version", "view_name"]
     edit_columns = ["view_name"]
 
 
 class RequirementVersionView(ModelView):
     datamodel = SQLAInterface(RequirementVersion)
-    list_columns = ["requirement.req_key", "version_label", "status", "changed_on", "changed_by"]
-    show_columns = ["requirement", "version_label", "status", "revision_date", "views", "reviews"]
+    list_columns = ["requirement.req_key", "version_label",
+                    "status", "changed_on", "changed_by"]
+    show_columns = ["requirement", "version_label",
+                    "status", "revision_date", "views", "reviews"]
     add_columns = ["requirement", "version_label", "status", "revision_date"]
     edit_columns = ["version_label", "status", "revision_date"]
     search_columns = ["status", "version_label"]
     formatters_columns = {"status": status_badge_formatter}
 
     add_fieldsets = [
-        ("Version Info", {"fields": ["requirement", "version_label", "status", "revision_date"]})
+        ("Version Info", {"fields": [
+         "requirement", "version_label", "status", "revision_date"]})
     ]
     edit_fieldsets = [
-        ("Version Revision", {"fields": ["version_label", "status", "revision_date"]})
+        ("Version Revision", {"fields": [
+         "version_label", "status", "revision_date"]})
     ]
 
     def pre_update(self, item):
         if item.status in [VersionStatus.APPROVED, VersionStatus.BASELINED]:
-            raise ValueError("Approved or Baselined requirement versions are read-only. Create a new revision.")
+            raise ValueError(
+                "Approved or Baselined requirement versions are read-only. Create a new revision.")
 
     @action("submit_for_review", "Submit for Review", "Submit selected draft(s) for formal review?", "fa-paper-plane", single=True)
     def submit_for_review(self, items):
@@ -159,7 +170,8 @@ class RequirementVersionView(ModelView):
                 self.datamodel.edit(item)
                 flash(f"{item} submitted for review.", "info")
             else:
-                flash(f"Cannot submit {item}: Only Drafts can be submitted.", "warning")
+                flash(
+                    f"Cannot submit {item}: Only Drafts can be submitted.", "warning")
         return redirect(self.get_redirect())
 
     @action("approve_version", "Approve Requirement", "Approve selected requirement version(s)?", "fa-check-circle", single=True)
@@ -170,7 +182,8 @@ class RequirementVersionView(ModelView):
                 self.datamodel.edit(item)
                 flash(f"{item} successfully approved.", "success")
             else:
-                flash(f"Cannot approve {item}: Must be 'In Review'.", "warning")
+                flash(
+                    f"Cannot approve {item}: Must be 'In Review'.", "warning")
         return redirect(self.get_redirect())
 
     @action("request_changes", "Request Revisions", "Request revisions on selected version?", "fa-undo", single=True)
@@ -208,8 +221,10 @@ class ValueWithUnitView(ModelView):
 
 class RequirementSatisfactionAssertionView(ModelView):
     datamodel = SQLAInterface(RequirementSatisfactionAssertion)
-    list_columns = ["requirement_view", "target", "assertion_statement", "asserted_by", "asserted_at"]
-    add_columns = ["requirement_view", "target", "assertion_statement", "asserted_by", "asserted_at"]
+    list_columns = ["requirement_view", "target",
+                    "assertion_statement", "asserted_by", "asserted_at"]
+    add_columns = ["requirement_view", "target",
+                   "assertion_statement", "asserted_by", "asserted_at"]
     edit_columns = ["assertion_statement", "asserted_by", "asserted_at"]
 
 
@@ -234,11 +249,13 @@ class ProjectBaselineMasterView(MasterDetailView):
     add_columns = ["project", "baseline_name", "release_date", "versions"]
     edit_columns = ["baseline_name", "release_date", "versions"]
     add_fieldsets = [
-        ("Baseline Identification", {"fields": ["project", "baseline_name", "release_date"]}),
+        ("Baseline Identification", {"fields": [
+         "project", "baseline_name", "release_date"]}),
         ("Included Requirements", {"fields": ["versions"], "expanded": True}),
     ]
     edit_fieldsets = [
-        ("Baseline Identification", {"fields": ["baseline_name", "release_date"]}),
+        ("Baseline Identification", {
+         "fields": ["baseline_name", "release_date"]}),
         ("Included Requirements", {"fields": ["versions"], "expanded": True}),
     ]
 
@@ -271,4 +288,3 @@ def page_not_found(e):
         ),
         404,
     )
-

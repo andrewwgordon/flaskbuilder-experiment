@@ -1,14 +1,12 @@
 import os
 import sys
 
-# Ensure CODESPACES is false during testing so SERVER_NAME isn't set to external domain
-os.environ["CODESPACES"] = "false"
+# Ensure the app package is on sys.path
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..")))
 
 import pytest
-
-# Ensure the app package is on sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+from flask_appbuilder import Model
 from sqlalchemy.pool import StaticPool
 
 from app import create_app
@@ -30,6 +28,8 @@ from app.models import (
     VersionStatus,
 )
 
+# Ensure CODESPACES is false during testing so SERVER_NAME isn't set to external domain
+os.environ["CODESPACES"] = "false"
 
 @pytest.fixture(scope="session")
 def app():
@@ -50,9 +50,6 @@ def app():
         }
     )
     yield test_app
-
-
-from flask_appbuilder import Model
 
 
 @pytest.fixture
@@ -95,7 +92,6 @@ def admin_user(app, db_session):
             password="password123",
         )
     return user
-
 
 
 @pytest.fixture

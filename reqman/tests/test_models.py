@@ -56,10 +56,12 @@ def test_polymorphic_property_values(db_session, sample_data):
     assert unit_val.value_type == "unit"
 
     assert str(str_val) == f"{str_val.name}: {str_val.text_content[:30]}..."
-    assert str(unit_val) == f"{unit_val.name}: {unit_val.numeric_value} {unit_val.unit}"
+    assert str(
+        unit_val) == f"{unit_val.name}: {unit_val.numeric_value} {unit_val.unit}"
 
     # Query polymorphism via base class
-    all_props = db_session.query(PropertyValue).filter_by(requirement_view_id=req_view.id).all()
+    all_props = db_session.query(PropertyValue).filter_by(
+        requirement_view_id=req_view.id).all()
     assert len(all_props) == 2
     types = {type(p) for p in all_props}
     assert StringValue in types
@@ -170,4 +172,5 @@ def test_cascade_deletion(db_session, sample_data):
     assert db_session.query(Project).get(proj_id) is None
     assert db_session.query(Requirement).get(req_id) is None
     assert db_session.query(RequirementVersion).get(ver_id) is None
-    assert db_session.query(ProjectBaseline).filter_by(project_id=proj_id).first() is None
+    assert db_session.query(ProjectBaseline).filter_by(
+        project_id=proj_id).first() is None

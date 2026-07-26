@@ -21,53 +21,59 @@
                 </div>
                 <div class="panel-body">
                     {% if pending_reviews %}
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Requirement Key</th>
-                                        <th>Requirement Title</th>
-                                        <th>Version Label</th>
-                                        <th>Project</th>
-                                        <th>Status</th>
-                                        <th>Submitted On</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for ver in pending_reviews %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ ver.requirement.req_key if ver.requirement else 'N/A' }}</strong>
-                                        </td>
-                                        <td>{{ ver.requirement.title if ver.requirement else 'N/A' }}</td>
-                                        <td><span class="label label-info">{{ ver.version_label }}</span></td>
-                                        <td>
-                                            {% if ver.requirement and ver.requirement.project %}
-                                                <span class="label label-default">{{ ver.requirement.project.project_code }}</span>
-                                            {% else %}
-                                                <span class="text-muted">Unassigned</span>
-                                            {% endif %}
-                                        </td>
-                                        <td><span class="label label-warning">{{ ver.status.value if ver.status else 'IN_REVIEW' }}</span></td>
-                                        <td>{{ ver.changed_on.strftime('%Y-%m-%d %H:%M') if ver.changed_on else 'N/A' }}</td>
-                                        <td>
-                                            <a href="{{ url_for('RequirementVersionView.show', pk=ver.id) }}" class="btn btn-default btn-xs">
-                                                <i class="fa fa-eye"></i> Review
-                                            </a>
-                                            <a href="{{ url_for('RequirementReviewView.add') }}?_flt_0_version={{ ver.id }}" class="btn btn-primary btn-xs">
-                                                <i class="fa fa-plus"></i> Add Log
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Requirement Key</th>
+                                    <th>Requirement Title</th>
+                                    <th>Version Label</th>
+                                    <th>Project</th>
+                                    <th>Status</th>
+                                    <th>Submitted On</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ver in pending_reviews %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ ver.requirement.req_key if ver.requirement else 'N/A' }}</strong>
+                                    </td>
+                                    <td>{{ ver.requirement.title if ver.requirement else 'N/A' }}</td>
+                                    <td><span class="label label-info">{{ ver.version_label }}</span></td>
+                                    <td>
+                                        {% if ver.requirement and ver.requirement.project %}
+                                        <span class="label label-default">{{ ver.requirement.project.project_code
+                                            }}</span>
+                                        {% else %}
+                                        <span class="text-muted">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="label label-warning">{{ ver.status.value if ver.status else
+                                            'IN_REVIEW' }}</span></td>
+                                    <td>{{ ver.changed_on.strftime('%Y-%m-%d %H:%M') if ver.changed_on else 'N/A' }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('RequirementVersionView.show', pk=ver.id) }}"
+                                            class="btn btn-default btn-xs">
+                                            <i class="fa fa-eye"></i> Review
+                                        </a>
+                                        <a href="{{ url_for('RequirementReviewView.add') }}?_flt_0_version={{ ver.id }}"
+                                            class="btn btn-primary btn-xs">
+                                            <i class="fa fa-plus"></i> Add Log
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     {% else %}
-                        <div class="alert alert-success">
-                            <i class="fa fa-check-circle"></i> All caught up! There are currently no requirement versions waiting for review.
-                        </div>
+                    <div class="alert alert-success">
+                        <i class="fa fa-check-circle"></i> All caught up! There are currently no requirement versions
+                        waiting for review.
+                    </div>
                     {% endif %}
                 </div>
             </div>

@@ -10,12 +10,12 @@ def create_app() -> Flask:
     # Tell Flask to trust the proxy headers forwarded by GitHub Codespaces
     # x_host=1 tells it to trust the dynamic *.app.github.dev host header
     app.wsgi_app = ProxyFix(
-       app.wsgi_app, 
-       x_for=1, 
-       x_proto=1, 
-       x_host=1, 
-       x_port=1
-   )
+        app.wsgi_app,
+        x_for=1,
+        x_proto=1,
+        x_host=1,
+        x_port=1
+    )
     with app.app_context():
         db.init_app(app)
 
@@ -142,4 +142,3 @@ def create_app() -> Flask:
         app.register_error_handler(404, page_not_found)
 
     return app
-
