@@ -77,7 +77,8 @@ def test_project_api_crud_workflow(api_client, db_session):
 
     # 4. Verify update
     get_res_updated = api_client.get(f"/api/v1/project/{created_id}")
-    assert get_res_updated.get_json()["result"]["name"] == "API Test Payload Updated"
+    assert get_res_updated.get_json(
+    )["result"]["name"] == "API Test Payload Updated"
 
     # 5. Delete project via DELETE
     del_res = api_client.delete(f"/api/v1/project/{created_id}")

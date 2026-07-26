@@ -24,8 +24,10 @@ class Project(Model, AuditMixin):
     name = Column(String(150), nullable=False)
     description = Column(Text, nullable=True)
 
-    requirements = relationship("Requirement", back_populates="project", cascade="all, delete-orphan")
-    baselines = relationship("ProjectBaseline", back_populates="project", cascade="all, delete-orphan")
+    requirements = relationship(
+        "Requirement", back_populates="project", cascade="all, delete-orphan")
+    baselines = relationship(
+        "ProjectBaseline", back_populates="project", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"[{self.project_code}] {self.name}"
@@ -69,10 +71,12 @@ class Requirement(Model, AuditMixin):
     req_key = Column(String(50), unique=True, nullable=False)
     title = Column(String(200), nullable=False)
 
-    owner_id = Column(Integer, ForeignKey("person_organization_select.id"), nullable=True)
+    owner_id = Column(Integer, ForeignKey(
+        "person_organization_select.id"), nullable=True)
     owner = relationship("PersonOrganizationSelect")
 
-    versions = relationship("RequirementVersion", back_populates="requirement", cascade="all, delete-orphan")
+    versions = relationship(
+        "RequirementVersion", back_populates="requirement", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"[{self.req_key}] {self.title}"
@@ -81,29 +85,37 @@ class Requirement(Model, AuditMixin):
 class RequirementVersion(Model, AuditMixin):
     __tablename__ = "requirement_version"
     id = Column(Integer, primary_key=True)
-    requirement_id = Column(Integer, ForeignKey("requirement.id"), nullable=False)
+    requirement_id = Column(Integer, ForeignKey(
+        "requirement.id"), nullable=False)
     version_label = Column(String(20), nullable=False)
-    status = Column(Enum(VersionStatus), default=VersionStatus.DRAFT, nullable=False)
+    status = Column(Enum(VersionStatus),
+                    default=VersionStatus.DRAFT, nullable=False)
     revision_date = Column(DateTime)
 
     requirement = relationship("Requirement", back_populates="versions")
-    views = relationship("RequirementView", back_populates="version", cascade="all, delete-orphan")
-    reviews = relationship("RequirementReview", back_populates="version", cascade="all, delete-orphan")
+    views = relationship(
+        "RequirementView", back_populates="version", cascade="all, delete-orphan")
+    reviews = relationship(
+        "RequirementReview", back_populates="version", cascade="all, delete-orphan")
 
     def __repr__(self):
-        status_val = self.status.value if hasattr(self.status, "value") else self.status
+        status_val = self.status.value if hasattr(
+            self.status, "value") else self.status
         return f"{self.requirement.req_key if self.requirement else 'REQ'} v{self.version_label} ({status_val})"
 
 
 class RequirementView(Model, AuditMixin):
     __tablename__ = "requirement_view"
     id = Column(Integer, primary_key=True)
-    version_id = Column(Integer, ForeignKey("requirement_version.id"), nullable=False)
+    version_id = Column(Integer, ForeignKey(
+        "requirement_version.id"), nullable=False)
     view_name = Column(String(100), nullable=False)
 
     version = relationship("RequirementVersion", back_populates="views")
-    properties = relationship("PropertyValue", back_populates="requirement_view", cascade="all, delete-orphan")
-    satisfaction_assertions = relationship("RequirementSatisfactionAssertion", back_populates="requirement_view", cascade="all, delete-orphan")
+    properties = relationship(
+        "PropertyValue", back_populates="requirement_view", cascade="all, delete-orphan")
+    satisfaction_assertions = relationship(
+        "RequirementSatisfactionAssertion", back_populates="requirement_view", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"{self.version} - {self.view_name}"
@@ -126,32 +138,41 @@ class RequirementRelationship(Model, AuditMixin):
 class RequirementTracingRelationship(Model, AuditMixin):
     __tablename__ = "requirement_tracing_relationship"
     id = Column(Integer, primary_key=True)
-    source_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
-    target_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
+    source_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
+    target_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
     trace_type = Column(String(50), default="Traces To")
 
-    source_view = relationship("RequirementView", foreign_keys=[source_view_id])
-    target_view = relationship("RequirementView", foreign_keys=[target_view_id])
+    source_view = relationship(
+        "RequirementView", foreign_keys=[source_view_id])
+    target_view = relationship(
+        "RequirementView", foreign_keys=[target_view_id])
 
 
 class RequirementDecompositionRelationship(Model, AuditMixin):
     __tablename__ = "requirement_decomposition_relationship"
     id = Column(Integer, primary_key=True)
-    parent_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
-    child_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
+    parent_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
+    child_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
 
-    parent_view = relationship("RequirementView", foreign_keys=[parent_view_id])
+    parent_view = relationship(
+        "RequirementView", foreign_keys=[parent_view_id])
     child_view = relationship("RequirementView", foreign_keys=[child_view_id])
 
 
 class PropertyValue(Model, AuditMixin):
     __tablename__ = "property_value"
     id = Column(Integer, primary_key=True)
-    requirement_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
+    requirement_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
     name = Column(String(100), nullable=False)
     value_type = Column(String(50))
 
-    requirement_view = relationship("RequirementView", back_populates="properties")
+    requirement_view = relationship(
+        "RequirementView", back_populates="properties")
 
     __mapper_args__ = {
         "polymorphic_identity": "property_value",
@@ -201,21 +222,25 @@ class DomainTarget(Model, AuditMixin):
     identifier = Column(String(100), nullable=False)
 
     def __repr__(self):
-        type_val = self.target_type.value if hasattr(self.target_type, 'value') else self.target_type
+        type_val = self.target_type.value if hasattr(
+            self.target_type, 'value') else self.target_type
         return f"[{type_val}] {self.name} ({self.identifier})"
 
 
 class RequirementSatisfactionAssertion(Model, AuditMixin):
     __tablename__ = "requirement_satisfaction_assertion"
     id = Column(Integer, primary_key=True)
-    requirement_view_id = Column(Integer, ForeignKey("requirement_view.id"), nullable=False)
+    requirement_view_id = Column(Integer, ForeignKey(
+        "requirement_view.id"), nullable=False)
     target_id = Column(Integer, ForeignKey("domain_target.id"), nullable=False)
     assertion_statement = Column(Text, nullable=False)
 
-    asserted_by_id = Column(Integer, ForeignKey("person_organization_select.id"), nullable=False)
+    asserted_by_id = Column(Integer, ForeignKey(
+        "person_organization_select.id"), nullable=False)
     asserted_at = Column(DateTime, nullable=False)
 
-    requirement_view = relationship("RequirementView", back_populates="satisfaction_assertions")
+    requirement_view = relationship(
+        "RequirementView", back_populates="satisfaction_assertions")
     target = relationship("DomainTarget")
     asserted_by = relationship("PersonOrganizationSelect")
 
@@ -224,8 +249,10 @@ class RequirementReview(Model, AuditMixin):
     """Review feedback log for a requirement version."""
     __tablename__ = "requirement_review"
     id = Column(Integer, primary_key=True)
-    version_id = Column(Integer, ForeignKey("requirement_version.id"), nullable=False)
-    reviewer_id = Column(Integer, ForeignKey("person_organization_select.id"), nullable=False)
+    version_id = Column(Integer, ForeignKey(
+        "requirement_version.id"), nullable=False)
+    reviewer_id = Column(Integer, ForeignKey(
+        "person_organization_select.id"), nullable=False)
     comments = Column(Text, nullable=False)
     recommended_status = Column(Enum(VersionStatus), nullable=False)
 
@@ -236,8 +263,10 @@ class RequirementReview(Model, AuditMixin):
 baseline_version_association = Table(
     "baseline_version_association",
     Model.metadata,
-    Column("baseline_id", Integer, ForeignKey("project_baseline.id"), primary_key=True),
-    Column("version_id", Integer, ForeignKey("requirement_version.id"), primary_key=True),
+    Column("baseline_id", Integer, ForeignKey(
+        "project_baseline.id"), primary_key=True),
+    Column("version_id", Integer, ForeignKey(
+        "requirement_version.id"), primary_key=True),
 )
 
 
@@ -250,7 +279,8 @@ class ProjectBaseline(Model, AuditMixin):
     release_date = Column(DateTime, nullable=False)
 
     project = relationship("Project", back_populates="baselines")
-    versions = relationship("RequirementVersion", secondary=baseline_version_association)
+    versions = relationship("RequirementVersion",
+                            secondary=baseline_version_association)
 
     def __repr__(self):
         return f"{self.project.project_code if self.project else 'PRJ'} - {self.baseline_name}"
